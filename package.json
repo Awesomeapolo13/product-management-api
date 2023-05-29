@@ -1,0 +1,24 @@
+{
+  "name": "product-management-api",
+  "version": "1.0.0",
+  "description": "The API that has been developed for wokring with products, their quantity, remain and etc",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Awesomeapolo13/product-management-api.git"
+  },
+  "keywords": [
+    "api",
+    "products",
+    "remains"
+  ],
+  "author": "Aleksey Logachev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Awesomeapolo13/product-management-api/issues"
+  },
+  "homepage": "https://github.com/Awesomeapolo13/product-management-api#readme"
+}
