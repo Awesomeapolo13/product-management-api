@@ -1,5 +1,4 @@
-let a = 3;
+import { Bootstrap } from '../src/common/bootstrap';
 
-a = 10;
-
-console.log(a);
+const bootstrap = new Bootstrap();
+export const boot = bootstrap.bootstrap();
