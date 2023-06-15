@@ -1,5 +1,5 @@
 import { BootstrapInterface } from './bootstrap.interface';
-import { Container } from 'inversify';
+import { Container, injectable } from 'inversify';
 import { App } from '../app';
 import { appBindings } from './dependency.injection/app.bindings';
 import { TYPES } from './dependency.injection/types';
@@ -14,7 +14,6 @@ export class Bootstrap implements BootstrapInterface {
 	}
 
 	public async bootstrap(): Promise<BootstrapInterface> {
-		console.log('TRY BOOTSTRAP');
 		this.appContainer.load(appBindings);
 		await this.app.init();
 

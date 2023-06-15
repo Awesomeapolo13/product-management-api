@@ -4,6 +4,7 @@ import { inject, injectable } from 'inversify';
 import { ConfigServiceInterface } from './common/config/config.service.interface';
 import { TYPES } from './common/dependency.injection/types';
 import { LoggerInterface } from './common/logger/logger.interface';
+import 'reflect-metadata';
 
 @injectable()
 export class App {
@@ -15,7 +16,6 @@ export class App {
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 		@inject(TYPES.LoggerService) private logger: LoggerInterface,
 	) {
-		console.log(' HERE HERE HRER!');
 		this.app = express();
 		this.port = Number(configService.get('SERVER_PORT'));
 		this.server = this.app.listen(this.port);
