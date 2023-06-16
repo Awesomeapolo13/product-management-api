@@ -14,7 +14,7 @@ export class App {
 
 	constructor(
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
-		@inject(TYPES.LoggerService) private logger: LoggerInterface,
+		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
 	) {
 		this.app = express();
 		this.port = Number(configService.get('SERVER_PORT'));
