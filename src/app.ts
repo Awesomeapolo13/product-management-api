@@ -6,6 +6,7 @@ import { TYPES } from './common/dependency.injection/types';
 import { LoggerInterface } from './common/logger/logger.interface';
 import 'reflect-metadata';
 import { ExceptionFilterInterface } from './common/error/exception.filter.interface';
+import { HealthCheckController } from './health.check/health.check.controller';
 
 @injectable()
 export class App {
@@ -17,6 +18,7 @@ export class App {
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: ExceptionFilterInterface,
+		@inject(TYPES.HealthCheckController) private healthCheckController: HealthCheckController,
 	) {
 		this.app = express();
 		this.port = Number(configService.get('SERVER_PORT'));
@@ -31,7 +33,7 @@ export class App {
 	}
 
 	private useRoutes(): void {
-		// App's routes are going to be initialized.
+		this.app.use('/health-check', this.healthCheckController.router);
 	}
 
 	private useMiddleware(): void {

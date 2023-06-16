@@ -8,6 +8,8 @@ import { ConfigService } from '../config/config.service';
 import { Bootstrap } from '../bootstrap';
 import { ExceptionFilterInterface } from '../error/exception.filter.interface';
 import { ExceptionFilter } from '../error/exception.filter';
+import { HealthCheckControllerInterface } from '../../health.check/health.check.controller.interface';
+import { HealthCheckController } from '../../health.check/health.check.controller';
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	// #region Common
@@ -17,4 +19,6 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<ExceptionFilterInterface>(TYPES.ExceptionFilter).to(ExceptionFilter);
 	bind<ConfigServiceInterface>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 	bind<LoggerInterface>(TYPES.LoggerInterface).to(LoggerService).inSingletonScope();
+	// #region Controllers
+	bind<HealthCheckControllerInterface>(TYPES.HealthCheckController).to(HealthCheckController);
 });

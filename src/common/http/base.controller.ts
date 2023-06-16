@@ -3,7 +3,7 @@ import { LoggerInterface } from '../logger/logger.interface';
 import { ExpressReturnType, RouteInterface } from './route.interface';
 import { injectable } from 'inversify';
 import { HttpError } from '../error/http.error';
-import { HttpCodeEnum } from './http.status.code.enum';
+import { HttpStatusCodeEnum } from './http.status.code.enum';
 
 @injectable()
 export abstract class BaseController {
@@ -37,12 +37,12 @@ export abstract class BaseController {
 	}
 
 	public ok<T>(res: Response, responseBody: T): ExpressReturnType {
-		return this.send<T>(res, 200, responseBody);
+		return this.send<T>(res, HttpStatusCodeEnum.OK_CODE, responseBody);
 	}
 
 	public error(next: NextFunction, message?: string, code?: number): void {
 		const error = new HttpError(
-			code ?? HttpCodeEnum.SERVER_EXCEPTION_CODE,
+			code ?? HttpStatusCodeEnum.SERVER_EXCEPTION_CODE,
 			message ?? BaseController.DEFAULT_HTTP_MSG,
 		);
 

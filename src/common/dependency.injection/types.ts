@@ -1,3 +1,5 @@
+import { HealthCheckController } from '../../health.check/health.check.controller';
+
 export const TYPES = {
 	// #region Common
 	Application: Symbol('Application'),
@@ -9,4 +11,6 @@ export const TYPES = {
 	ConfigService: Symbol('ConfigService'),
 	ExceptionFilterInterface: Symbol('ExceptionFilterInterface'),
 	ExceptionFilter: Symbol('ExceptionFilter'),
+	// #region Controller
+	HealthCheckController: Symbol('HealthCheckController'),
 };
