@@ -5,6 +5,7 @@ import { ExceptionFilterInterface } from './exception.filter.interface';
 import { Request, Response, NextFunction } from 'express';
 import { LoggerInterface } from '../logger/logger.interface';
 import { TYPES } from '../dependency.injection/types';
+import { HttpCodeEnum } from '../http/http.status.code.enum';
 
 @injectable()
 export class ExceptionFilter implements ExceptionFilterInterface {
@@ -17,7 +18,7 @@ export class ExceptionFilter implements ExceptionFilterInterface {
 			res.status(err.statusCode).send(this.getErrResponseBody(err.message));
 		} else {
 			this.logger.error(`${err.message}`);
-			res.status(500).send(this.getErrResponseBody(err.message));
+			res.status(HttpCodeEnum.SERVER_EXCEPTION_CODE).send(this.getErrResponseBody(err.message));
 		}
 	}
 
