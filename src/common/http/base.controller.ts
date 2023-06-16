@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { LoggerInterface } from './logger/logger.interface';
+import { LoggerInterface } from '../logger/logger.interface';
 import { RouteInterface } from './route.interface';
 import { injectable } from 'inversify';
 

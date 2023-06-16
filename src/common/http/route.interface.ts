@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { MiddlewareInterface } from './middleware/middleware.interface';
+import { MiddlewareInterface } from '../middleware/middleware.interface';
 
 export interface RouteInterface {
 	path: string;
