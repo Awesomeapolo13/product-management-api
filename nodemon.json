@@ -1,0 +1,11 @@
+{
+  "watch": [
+    "./public",
+    "./src"
+  ],
+  "ext": "ts,json",
+  "ignore": [
+    "src/**/*.spec.ts"
+  ],
+  "exec": "ts-node --files ./public/index.ts"
+}

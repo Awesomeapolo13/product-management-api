@@ -1,0 +1,17 @@
+version: '3'
+services:
+  prod_manage_db:
+    build:
+      context: ./postgres
+    restart: always
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - p_mg_db_data:/var/lib/postgresql/data:rw
+
+volumes:
+  p_mg_db_data:
