@@ -11,6 +11,7 @@ export const TYPES = {
 	ConfigService: Symbol('ConfigService'),
 	ExceptionFilterInterface: Symbol('ExceptionFilterInterface'),
 	ExceptionFilter: Symbol('ExceptionFilter'),
+	PrismaService: Symbol('PrismaService'),
 	// #region Controller
 	HealthCheckController: Symbol('HealthCheckController'),
 };

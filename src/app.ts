@@ -7,6 +7,7 @@ import { LoggerInterface } from './common/logger/logger.interface';
 import 'reflect-metadata';
 import { ExceptionFilterInterface } from './common/error/exception.filter.interface';
 import { HealthCheckController } from './health.check/health.check.controller';
+import { PrismaService } from './common/database/prisma.service';
 
 @injectable()
 export class App {
@@ -18,6 +19,7 @@ export class App {
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: ExceptionFilterInterface,
+		@inject(TYPES.PrismaService) private readonly prismaService: PrismaService,
 		@inject(TYPES.HealthCheckController) private healthCheckController: HealthCheckController,
 	) {
 		this.app = express();
@@ -29,6 +31,7 @@ export class App {
 		this.useMiddleware();
 		this.useRoutes();
 		this.useExceptionFilters();
+		await this.usePrismaOrm();
 		this.logger.log(`Сервер запущен на http://localhost:${this.port}`);
 	}
 
@@ -43,5 +46,9 @@ export class App {
 
 	private useExceptionFilters(): void {
 		this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
+	}
+
+	private async usePrismaOrm(): Promise<void> {
+		await this.prismaService.connect();
 	}
 }
