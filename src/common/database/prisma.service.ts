@@ -5,7 +5,7 @@ import { LoggerInterface } from '../logger/logger.interface';
 
 @injectable()
 export class PrismaService {
-	private readonly client: PrismaClient;
+	public readonly client: PrismaClient;
 
 	constructor(@inject(TYPES.LoggerInterface) private readonly logger: LoggerInterface) {
 		this.client = new PrismaClient();

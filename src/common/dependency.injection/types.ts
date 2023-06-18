@@ -14,4 +14,6 @@ export const TYPES = {
 	PrismaService: Symbol('PrismaService'),
 	// #region Controller
 	HealthCheckController: Symbol('HealthCheckController'),
+	// #region Repositories
+	UserRepository: Symbol.for('UserRepository'),
 };
