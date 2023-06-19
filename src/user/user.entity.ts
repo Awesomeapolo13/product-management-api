@@ -1,4 +1,4 @@
-import { hash } from 'bcrypt';
+import { hash, genSalt } from 'bcrypt';
 import { Role } from '@prisma/client';
 
 export class User {
@@ -28,8 +28,8 @@ export class User {
 		return this._password;
 	}
 
-	public async setPassword(pass: string): Promise<void> {
-		this._password = await hash(pass, 10);
+	public async setPassword(pass: string, salt: number): Promise<void> {
+		this._password = await hash(pass, await genSalt(salt));
 	}
 
 	get createdAt(): Date {

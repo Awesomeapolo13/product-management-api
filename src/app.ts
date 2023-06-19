@@ -8,6 +8,7 @@ import 'reflect-metadata';
 import { ExceptionFilterInterface } from './common/error/exception.filter.interface';
 import { HealthCheckController } from './health.check/health.check.controller';
 import { PrismaService } from './common/database/prisma.service';
+import { UserController } from './user/user.controller';
 
 @injectable()
 export class App {
@@ -21,6 +22,7 @@ export class App {
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: ExceptionFilterInterface,
 		@inject(TYPES.PrismaService) private readonly prismaService: PrismaService,
 		@inject(TYPES.HealthCheckController) private healthCheckController: HealthCheckController,
+		@inject(TYPES.UserController) private readonly userController: UserController,
 	) {
 		this.app = express();
 		this.port = Number(configService.get('SERVER_PORT'));
@@ -37,6 +39,7 @@ export class App {
 
 	private useRoutes(): void {
 		this.app.use('/health-check', this.healthCheckController.router);
+		this.app.use('/user', this.userController.router);
 	}
 
 	private useMiddleware(): void {

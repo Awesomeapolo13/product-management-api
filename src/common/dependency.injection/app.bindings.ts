@@ -13,6 +13,9 @@ import { HealthCheckController } from '../../health.check/health.check.controlle
 import { PrismaService } from '../database/prisma.service';
 import { UserRepositoryInterface } from '../../user/user.repository.interface';
 import { UserRepository } from '../../user/user.repository';
+import { UserService } from '../../user/user.service';
+import { UserController } from '../../user/user.controller';
+import { UserControllerInterface } from '../../user/user.controller.interface';
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	// #region Common
@@ -25,6 +28,8 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
 	// #region Controllers
 	bind<HealthCheckControllerInterface>(TYPES.HealthCheckController).to(HealthCheckController);
-	// #region Repositories
+	// #region User services
+	bind<UserControllerInterface>(TYPES.UserController).to(UserController);
+	bind<UserService>(TYPES.UserService).to(UserService);
 	bind<UserRepositoryInterface>(TYPES.UserRepository).to(UserRepository);
 });
