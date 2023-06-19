@@ -29,7 +29,7 @@ export class User {
 	}
 
 	public async setPassword(pass: string, salt: number): Promise<void> {
-		this._password = await hash(pass, await genSalt(salt));
+		this._password = await hash(pass, salt);
 	}
 
 	get createdAt(): Date {
