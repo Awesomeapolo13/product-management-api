@@ -9,6 +9,7 @@ import { ExceptionFilterInterface } from './common/error/exception.filter.interf
 import { HealthCheckController } from './health.check/health.check.controller';
 import { PrismaService } from './common/database/prisma.service';
 import { UserController } from './user/user.controller';
+import { AuthMiddleware } from './common/middleware/auth/auth.middleware';
 
 @injectable()
 export class App {
@@ -43,8 +44,11 @@ export class App {
 	}
 
 	private useMiddleware(): void {
+		const authMiddleware = new AuthMiddleware(this.configService.get('SECRET'));
+
 		this.app.use(express.json());
 		this.app.use(express.urlencoded());
+		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
 
 	private useExceptionFilters(): void {
