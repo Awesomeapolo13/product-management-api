@@ -10,6 +10,7 @@ import { HealthCheckController } from './health.check/health.check.controller';
 import { PrismaService } from './common/database/prisma.service';
 import { UserController } from './user/user.controller';
 import { AuthMiddleware } from './common/middleware/auth/auth.middleware';
+import { secureConfig } from './common/middleware/auth/secure.config';
 
 @injectable()
 export class App {
@@ -44,7 +45,11 @@ export class App {
 	}
 
 	private useMiddleware(): void {
-		const authMiddleware = new AuthMiddleware(this.configService.get('SECRET'));
+		const authMiddleware = new AuthMiddleware(
+			this.configService.get('SECRET'),
+			secureConfig.noAuthRoutes,
+			this.prismaService,
+		);
 
 		this.app.use(express.json());
 		this.app.use(express.urlencoded());
