@@ -1,8 +1,11 @@
 import { MiddlewareInterface } from '../middleware.interface';
 import { Request, NextFunction, Response } from 'express';
 import { verify } from 'jsonwebtoken';
-import { Role, UserModel } from '@prisma/client';
+import { UserModel } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { HttpError } from '../../error/http.error';
+import { HttpStatusCodeEnum } from '../../http/http.status.code.enum';
+import { BaseMsgEnum } from '../../dictionary/base.msg.enum';
 
 export class AuthMiddleware implements MiddlewareInterface {
 	constructor(
@@ -11,33 +14,50 @@ export class AuthMiddleware implements MiddlewareInterface {
 		private readonly prismaService: PrismaService,
 	) {}
 	public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
-		if (req.headers.authorization) {
+		if (this.noAuthRoutes.includes(req.path)) {
+			next();
+		} else if (req.headers.authorization) {
 			verify(req.headers.authorization.split(' ')[1], this.secret, (error, payload) => {
 				if (error) {
-					next();
+					next(new HttpError(HttpStatusCodeEnum.UNAUTHORIZED_CODE, 'Вы не авторизованы.'));
 				} else if (
 					payload &&
 					typeof payload !== 'string' &&
 					!this.noAuthRoutes.includes(req.path)
 				) {
-					const authUser = this.findAuthUser(payload.email, payload.role);
+					const authUser = this.findAuthUser(payload.email);
 					// ToDo Find user, check if route is allowed for unauth, record the user from DB.
-					req.user = { email: payload.email, role: payload.role };
+					req.user = authUser;
+					if (authUser === null) {
+						next(
+							new HttpError(
+								HttpStatusCodeEnum.UNAUTHORIZED_CODE,
+								'Вы не авторизованы.',
+								'AUTHORIZATION',
+							),
+						);
+					}
 					next();
 				}
 			});
+		} else {
+			next(
+				new HttpError(
+					HttpStatusCodeEnum.BAD_REQUEST_CODE,
+					BaseMsgEnum.DEFAULT_ERR_MGS,
+					'AUTHORIZATION',
+				),
+			);
 		}
-		next();
 	}
 
 	/**
 	 * Получает пользователя по email и роли.
 	 */
-	private async findAuthUser(email: string, role: Role): Promise<UserModel | null> {
+	private async findAuthUser(email: string): Promise<UserModel | null> {
 		return this.prismaService.client.userModel.findFirst({
 			where: {
 				email,
-				role,
 			},
 		});
 	}

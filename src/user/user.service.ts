@@ -42,15 +42,14 @@ export class UserService {
 			);
 		}
 
-		return await this.signJWT(user.email, user.role, this.configService.get('SECRET'));
+		return await this.signJWT(user.email, this.configService.get('SECRET'));
 	}
 
-	private signJWT(email: string, role: Role, secret: string): Promise<string> {
+	private signJWT(email: string, secret: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			sign(
 				{
 					email: email,
-					role: role,
 					iat: Math.floor(Date.now() / 1000),
 				},
 				secret,
