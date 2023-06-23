@@ -45,6 +45,15 @@ export class UserService {
 		return await this.signJWT(user.email, this.configService.get('SECRET'));
 	}
 
+	public getUserInfo(model: UserModel): object {
+		return {
+			name: model.name,
+			email: model.email,
+			role: model.role,
+			createdAt: model.createdAt,
+		};
+	}
+
 	private signJWT(email: string, secret: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			sign(

@@ -29,6 +29,11 @@ export class UserController extends BaseController implements UserControllerInte
 				method: 'post',
 				func: this.loginAction,
 			},
+			{
+				path: '/profile',
+				method: 'get',
+				func: this.getProfileAction,
+			},
 		]);
 	}
 
@@ -54,7 +59,16 @@ export class UserController extends BaseController implements UserControllerInte
 		dto.password = body.password;
 		try {
 			const user = await this.userService.register(dto);
-			this.ok(res, { success: true, user: user?.email, id: user?.id });
+			this.ok(res, { success: true, user: { email: user?.email, id: user?.id } });
+		} catch (e) {
+			return next(e);
+		}
+	}
+
+	public getProfileAction({ user, body }: Request, res: Response, next: NextFunction): void {
+		try {
+			const userResp = this.userService.getUserInfo(user);
+			this.ok(res, { success: true, user: userResp });
 		} catch (e) {
 			return next(e);
 		}
