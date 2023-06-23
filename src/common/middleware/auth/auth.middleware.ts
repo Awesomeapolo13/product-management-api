@@ -5,7 +5,6 @@ import { UserModel } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { HttpError } from '../../error/http.error';
 import { HttpStatusCodeEnum } from '../../http/http.status.code.enum';
-import { BaseMsgEnum } from '../../dictionary/base.msg.enum';
 
 export class AuthMiddleware implements MiddlewareInterface {
 	constructor(
@@ -17,7 +16,7 @@ export class AuthMiddleware implements MiddlewareInterface {
 		if (this.noAuthRoutes.includes(req.path)) {
 			next();
 		} else if (req.headers.authorization) {
-			verify(req.headers.authorization.split(' ')[1], this.secret, (error, payload) => {
+			verify(req.headers.authorization.split(' ')[1], this.secret, async (error, payload) => {
 				if (error) {
 					next(new HttpError(HttpStatusCodeEnum.UNAUTHORIZED_CODE, 'Вы не авторизованы.'));
 				} else if (
@@ -25,7 +24,7 @@ export class AuthMiddleware implements MiddlewareInterface {
 					typeof payload !== 'string' &&
 					!this.noAuthRoutes.includes(req.path)
 				) {
-					const authUser = this.findAuthUser(payload.email);
+					const authUser = await this.findAuthUser(payload.email);
 					// ToDo Find user, check if route is allowed for unauth, record the user from DB.
 					req.user = authUser;
 					if (authUser === null) {
@@ -42,11 +41,7 @@ export class AuthMiddleware implements MiddlewareInterface {
 			});
 		} else {
 			next(
-				new HttpError(
-					HttpStatusCodeEnum.BAD_REQUEST_CODE,
-					BaseMsgEnum.DEFAULT_ERR_MGS,
-					'AUTHORIZATION',
-				),
+				new HttpError(HttpStatusCodeEnum.UNAUTHORIZED_CODE, 'Вы не авторизованы.', 'AUTHORIZATION'),
 			);
 		}
 	}
