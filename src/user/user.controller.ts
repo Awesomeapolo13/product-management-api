@@ -9,6 +9,7 @@ import { UserService } from './user.service';
 import { UserRegisterDto } from './dto/user.register.dto';
 import { UserLoginDto } from './dto/user.login.dto';
 import { HttpError } from '../common/error/http.error';
+import { ValidateMiddleware } from '../common/middleware/validate.middleware';
 
 @injectable()
 export class UserController extends BaseController implements UserControllerInterface {
@@ -23,11 +24,13 @@ export class UserController extends BaseController implements UserControllerInte
 				path: '/register',
 				method: 'post',
 				func: this.registerAction,
+				middlewares: [new ValidateMiddleware(UserRegisterDto)],
 			},
 			{
 				path: '/login',
 				method: 'post',
 				func: this.loginAction,
+				middlewares: [new ValidateMiddleware(UserLoginDto)],
 			},
 			{
 				path: '/profile',
@@ -37,12 +40,13 @@ export class UserController extends BaseController implements UserControllerInte
 		]);
 	}
 
-	public async loginAction({ body }: Request, res: Response, next: NextFunction): Promise<void> {
-		const dto = new UserLoginDto();
-		dto.email = body.email;
-		dto.password = body.password;
+	public async loginAction(
+		{ body }: Request<{}, {}, UserLoginDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
 		try {
-			const jwt = await this.userService.login(dto);
+			const jwt = await this.userService.login(body);
 			this.ok(res, { success: true, jwt: jwt });
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -52,13 +56,13 @@ export class UserController extends BaseController implements UserControllerInte
 		}
 	}
 
-	public async registerAction({ body }: Request, res: Response, next: NextFunction): Promise<void> {
-		const dto = new UserRegisterDto();
-		dto.name = body.name;
-		dto.email = body.email;
-		dto.password = body.password;
+	public async registerAction(
+		{ body }: Request<{}, {}, UserRegisterDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
 		try {
-			const user = await this.userService.register(dto);
+			const user = await this.userService.register(body);
 			this.ok(res, { success: true, user: { email: user?.email, id: user?.id } });
 		} catch (e) {
 			return next(e);
