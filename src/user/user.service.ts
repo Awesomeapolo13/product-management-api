@@ -25,7 +25,10 @@ export class UserService {
 		await newUser.setPassword(password, Number(secret));
 		const existedUser = await this.userRepo.find(email);
 		if (existedUser) {
-			return null;
+			throw new HttpError(
+				HttpStatusCodeEnum.BAD_REQUEST_CODE,
+				'Пользователь с таким email уже существует',
+			);
 		}
 
 		return this.userRepo.create(newUser);
