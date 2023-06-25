@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
+    "ci": "cp .deployment/docker/.env.dist .deployment/docker/.env ; cp .env.dist .env ; make dc_init",
     "start": "node ./dist/public/index.js",
     "dev": "nodemon",
     "dev:inspect": "nodemon -e ts,json --exec node --inspect=localhost:9222 -r ts-node/register index.ts",
