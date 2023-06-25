@@ -6,7 +6,7 @@ import { PrismaService } from '../src/common/database/prisma.service';
 import { LoggerService } from '../src/common/logger/logger.service';
 
 let application: App;
-let JWT: string;
+let JWT: string | null | undefined;
 let prismaService: PrismaService;
 let testUser: { name: string; email: string; password: string };
 
@@ -20,6 +20,7 @@ beforeAll(async () => {
 	};
 	application = app;
 	await prismaService.connect();
+	JWT = null;
 });
 
 describe('User e2e', () => {
@@ -149,6 +150,43 @@ describe('User e2e', () => {
 		expect(res.body.success).toBe(true);
 		expect(res.body.jwt).not.toBeUndefined();
 		expect(res.body.jwt).not.toBeNull;
+		JWT = res.body.jwt;
+	});
+
+	it('Get user info - success', async () => {
+		const res = await request(application.app)
+			.get('/user/profile')
+			.set('Authorization', 'Bearer ' + JWT)
+			.send();
+		expect(res.statusCode).toBe(HttpStatusCodeEnum.OK_CODE);
+		expect(res.body.success).toBe(true);
+		expect(res.body.user).not.toBeUndefined();
+		expect(res.body.user).not.toBeNull();
+		expect(res.body.user.createdAt).not.toBeUndefined();
+		expect(res.body.user.createdAt).not.toBeNull();
+		expect(res.body.user.name).toBe(testUser.name);
+		expect(res.body.user.email).toBe(testUser.email);
+		expect(res.body.user.role).toBe('ADMIN');
+	});
+
+	it('Get user info - unauthorized empty token', async () => {
+		const res = await request(application.app)
+			.get('/user/profile')
+			.set(
+				'Authorization',
+				'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Ik1GS1IyQG1haWwucnUiLCJpYXQiOjE2ODc1MDk2NDh9.4xJhbDO93SF9BV9Ic41tkRwjJTOTwrlmfJs-ZGrPCXc',
+			)
+			.send();
+		expect(res.statusCode).toBe(HttpStatusCodeEnum.UNAUTHORIZED_CODE);
+		expect(res.body.success).toBe(false);
+		expect(res.body.err).toBe('Вы не авторизованы.');
+	});
+
+	it('Get user info - unauthorized wrong token', async () => {
+		const res = await request(application.app).get('/user/profile').send();
+		expect(res.statusCode).toBe(HttpStatusCodeEnum.UNAUTHORIZED_CODE);
+		expect(res.body.success).toBe(false);
+		expect(res.body.err).toBe('Вы не авторизованы.');
 	});
 });
 
