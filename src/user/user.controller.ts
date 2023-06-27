@@ -47,7 +47,7 @@ export class UserController extends BaseController implements UserControllerInte
 	): Promise<void> {
 		try {
 			const jwt = await this.userService.login(body);
-			this.ok(res, { success: true, jwt: jwt });
+			this.ok(res, { success: true, jwt });
 		} catch (e) {
 			if (e instanceof HttpError) {
 				return this.error(next, e.message, e.statusCode);
@@ -69,7 +69,7 @@ export class UserController extends BaseController implements UserControllerInte
 		}
 	}
 
-	public getProfileAction({ user, body }: Request, res: Response, next: NextFunction): void {
+	public getProfileAction({ user }: Request, res: Response, next: NextFunction): void {
 		try {
 			const userResp = this.userService.getUserInfo(user);
 			this.ok(res, { success: true, user: userResp });

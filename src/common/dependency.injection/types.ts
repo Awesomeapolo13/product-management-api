@@ -12,7 +12,8 @@ export const TYPES = {
 	ExceptionFilterInterface: Symbol.for('ExceptionFilterInterface'),
 	ExceptionFilter: Symbol.for('ExceptionFilter'),
 	PrismaService: Symbol.for('PrismaService'),
-	// #region Controller
+	// #endregion Common Services
+	// #region HealthCheck
 	HealthCheckController: Symbol.for('HealthCheckController'),
 	// #region User services
 	UserController: Symbol.for('UserController'),

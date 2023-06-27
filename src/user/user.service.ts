@@ -6,7 +6,6 @@ import { ConfigServiceInterface } from '../common/config/config.service.interfac
 import { UserRepositoryInterface } from './user.repository.interface';
 import { User } from './user.entity';
 import { Role, UserModel } from '@prisma/client';
-import { UserLoginDto } from './dto/user.login.dto';
 import { sign } from 'jsonwebtoken';
 import { HttpError } from '../common/error/http.error';
 import { HttpStatusCodeEnum } from '../common/http/http.status.code.enum';
@@ -34,7 +33,7 @@ export class UserService {
 		return this.userRepo.create(newUser);
 	}
 
-	public async login({ email, password }: UserLoginDto): Promise<string> {
+	public async login({ email, password }: { email: string; password: string }): Promise<string> {
 		const user = await this.userRepo.find(email);
 		const hashedPass = await hash(password, Number(this.configService.get('SALT')));
 		if (!user || (await compare(hashedPass, user.password))) {

@@ -25,9 +25,7 @@ export class AuthMiddleware implements MiddlewareInterface {
 					!this.noAuthRoutes.includes(req.path)
 				) {
 					const authUser = await this.findAuthUser(payload.email);
-					// ToDo Find user, check if route is allowed for unauth, record the user from DB.
-					req.user = authUser;
-					if (authUser === null) {
+					if (authUser) {
 						next(
 							new HttpError(
 								HttpStatusCodeEnum.UNAUTHORIZED_CODE,
@@ -36,6 +34,7 @@ export class AuthMiddleware implements MiddlewareInterface {
 							),
 						);
 					}
+					req.user = authUser;
 					next();
 				}
 			});
