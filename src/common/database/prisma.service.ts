@@ -1,13 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../dependency.injection/types';
-import { LoggerInterface } from '../logger/logger.interface';
+import { ILogger } from '../logger/logger.interface';
 
 @injectable()
 export class PrismaService {
 	public readonly client: PrismaClient;
 
-	constructor(@inject(TYPES.LoggerInterface) private readonly logger: LoggerInterface) {
+	constructor(@inject(TYPES.ILogger) private readonly logger: ILogger) {
 		this.client = new PrismaClient();
 	}
 

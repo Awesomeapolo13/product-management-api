@@ -1,10 +1,10 @@
-import { MiddlewareInterface } from './middleware.interface';
+import { IMiddleware } from './middleware.interface';
 import { Request, NextFunction, Response } from 'express';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { HttpStatusCodeEnum } from '../http/http.status.code.enum';
 import { validate, ValidationError } from 'class-validator';
 
-export class ValidateMiddleware implements MiddlewareInterface {
+export class ValidateMiddleware implements IMiddleware {
 	constructor(private classToValidate: ClassConstructor<object>) {}
 	public async execute(
 		{ method, query, body }: Request,

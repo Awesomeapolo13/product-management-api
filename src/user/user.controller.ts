@@ -1,22 +1,20 @@
-import { UserControllerInterface } from './user.controller.interface';
+import { IUserController } from './interface/user.controller.interface';
 import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/dependency.injection/types';
-import { LoggerInterface } from '../common/logger/logger.interface';
-import { ConfigServiceInterface } from '../common/config/config.service.interface';
+import { ILogger } from '../common/logger/logger.interface';
 import { BaseController } from '../common/http/base.controller';
-import { UserService } from './user.service';
 import { UserRegisterDto } from './dto/user.register.dto';
 import { UserLoginDto } from './dto/user.login.dto';
 import { HttpError } from '../common/error/http.error';
 import { ValidateMiddleware } from '../common/middleware/validate.middleware';
+import { IUserService } from './interface/user.service.interface';
 
 @injectable()
-export class UserController extends BaseController implements UserControllerInterface {
+export class UserController extends BaseController implements IUserController {
 	constructor(
-		@inject(TYPES.LoggerInterface) protected logger: LoggerInterface,
-		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
-		@inject(TYPES.UserService) private userService: UserService,
+		@inject(TYPES.ILogger) protected logger: ILogger,
+		@inject(TYPES.UserService) private userService: IUserService,
 	) {
 		super(logger);
 		this.bindRoutes([

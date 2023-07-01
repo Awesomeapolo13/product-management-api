@@ -1,6 +1,6 @@
-import { HttpRespInterface } from '../http/http.resp.interface';
+import { IHttpResp } from '../http/http.resp.interface';
 
-export interface ErrorRespBodyInterface extends HttpRespInterface {
+export interface IErrorRespBody extends IHttpResp {
 	success: boolean;
 	err: string;
 }

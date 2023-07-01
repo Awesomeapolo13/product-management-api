@@ -1,4 +1,4 @@
-import { MiddlewareInterface } from '../middleware.interface';
+import { IMiddleware } from '../middleware.interface';
 import { Request, NextFunction, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 import { UserModel } from '@prisma/client';
@@ -6,7 +6,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { HttpError } from '../../error/http.error';
 import { HttpStatusCodeEnum } from '../../http/http.status.code.enum';
 
-export class AuthMiddleware implements MiddlewareInterface {
+export class AuthMiddleware implements IMiddleware {
 	constructor(
 		private readonly secret: string,
 		private readonly noAuthRoutes: string[],

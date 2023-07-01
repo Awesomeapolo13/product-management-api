@@ -1,24 +1,32 @@
-import { UserRegisterDto } from './dto/user.register.dto';
 import { inject, injectable } from 'inversify';
 import { v4 as uuidv4 } from 'uuid';
 import { TYPES } from '../common/dependency.injection/types';
-import { ConfigServiceInterface } from '../common/config/config.service.interface';
-import { UserRepositoryInterface } from './user.repository.interface';
+import { IConfigService } from '../common/config/config.service.interface';
+import { IUserRepository } from './user.repository.interface';
 import { User } from './user.entity';
 import { Role, UserModel } from '@prisma/client';
 import { sign } from 'jsonwebtoken';
 import { HttpError } from '../common/error/http.error';
 import { HttpStatusCodeEnum } from '../common/http/http.status.code.enum';
 import { hash, compare } from 'bcrypt';
+import { IUserService } from './interface/user.service.interface';
 
 @injectable()
-export class UserService {
+export class UserService implements IUserService {
 	constructor(
-		@inject(TYPES.ConfigService) private readonly configService: ConfigServiceInterface,
-		@inject(TYPES.UserRepository) private readonly userRepo: UserRepositoryInterface,
+		@inject(TYPES.ConfigService) private readonly configService: IConfigService,
+		@inject(TYPES.UserRepository) private readonly userRepo: IUserRepository,
 	) {}
 
-	public async register({ name, email, password }: UserRegisterDto): Promise<UserModel | null> {
+	public async register({
+		name,
+		email,
+		password,
+	}: {
+		name: string;
+		email: string;
+		password: string;
+	}): Promise<UserModel> {
 		const newUser = new User(uuidv4(), name, email, Role.ADMIN, new Date());
 		const secret = this.configService.get('SALT');
 		await newUser.setPassword(password, Number(secret));

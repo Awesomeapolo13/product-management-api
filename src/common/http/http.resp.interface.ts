@@ -1,3 +1,3 @@
-export interface HttpRespInterface {
+export interface IHttpResp {
 	success: boolean;
 }

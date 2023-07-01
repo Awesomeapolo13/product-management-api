@@ -1,11 +1,11 @@
 import express, { Express } from 'express';
 import { Server } from 'http';
 import { inject, injectable } from 'inversify';
-import { ConfigServiceInterface } from './common/config/config.service.interface';
+import { IConfigService } from './common/config/config.service.interface';
 import { TYPES } from './common/dependency.injection/types';
-import { LoggerInterface } from './common/logger/logger.interface';
+import { ILogger } from './common/logger/logger.interface';
 import 'reflect-metadata';
-import { ExceptionFilterInterface } from './common/error/exception.filter.interface';
+import { IExceptionFilter } from './common/error/exception.filter.interface';
 import { HealthCheckController } from './health.check/health.check.controller';
 import { PrismaService } from './common/database/prisma.service';
 import { UserController } from './user/user.controller';
@@ -19,9 +19,9 @@ export class App {
 	public server: Server;
 
 	constructor(
-		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
-		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
-		@inject(TYPES.ExceptionFilter) private exceptionFilter: ExceptionFilterInterface,
+		@inject(TYPES.ConfigService) private configService: IConfigService,
+		@inject(TYPES.ILogger) private logger: ILogger,
+		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
 		@inject(TYPES.PrismaService) private readonly prismaService: PrismaService,
 		@inject(TYPES.HealthCheckController) private healthCheckController: HealthCheckController,
 		@inject(TYPES.UserController) private readonly userController: UserController,

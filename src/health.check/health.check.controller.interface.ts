@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 
-export class HealthCheckControllerInterface {
+export class IHealthCheckController {
 	healthCheckAction: (req: Request, res: Response, next: NextFunction) => void;
 }

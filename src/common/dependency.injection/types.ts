@@ -5,11 +5,11 @@ export const TYPES = {
 	Application: Symbol.for('Application'),
 	Bootstrap: Symbol.for('Bootstrap'),
 	// #region Common Services
-	LoggerInterface: Symbol.for('LoggerServiceInterface'),
+	ILogger: Symbol.for('ILogger'),
 	LoggerService: Symbol.for('LoggerService'),
-	ConfigServiceInterface: Symbol.for('ConfigServiceInterface'),
+	IConfigService: Symbol.for('IConfigService'),
 	ConfigService: Symbol.for('ConfigService'),
-	ExceptionFilterInterface: Symbol.for('ExceptionFilterInterface'),
+	IExceptionFilter: Symbol.for('IExceptionFilter'),
 	ExceptionFilter: Symbol.for('ExceptionFilter'),
 	PrismaService: Symbol.for('PrismaService'),
 	// #endregion Common Services
