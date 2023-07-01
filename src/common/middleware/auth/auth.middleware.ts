@@ -2,17 +2,21 @@ import { IMiddleware } from '../middleware.interface';
 import { Request, NextFunction, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 import { UserModel } from '@prisma/client';
-import { PrismaService } from '../../database/prisma.service';
 import { HttpError } from '../../error/http.error';
 import { HttpStatusCodeEnum } from '../../http/http.status.code.enum';
 import { AuthMsgEnum } from './auth.msg.enum';
 import { ExceptionContextEnum } from '../../error/exception.context.enum';
+import { secureConfig } from './secure.config';
+import { IConfigService } from '../../config/config.service.interface';
+import { inject, injectable } from 'inversify';
+import { TYPES } from '../../dependency.injection/types';
+import { IUserRepository } from '../../../user/interface/user.repository.interface';
 
+@injectable()
 export class AuthMiddleware implements IMiddleware {
 	constructor(
-		private readonly secret: string,
-		private readonly noAuthRoutes: string[],
-		private readonly prismaService: PrismaService,
+		@inject(TYPES.ConfigService) private readonly configService: IConfigService,
+		@inject(TYPES.UserRepository) private readonly userRepo: IUserRepository,
 	) {}
 	public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
 		if (await this.isUnauthRoute(req.path)) {
@@ -25,11 +29,11 @@ export class AuthMiddleware implements IMiddleware {
 	}
 
 	private async isUnauthRoute(path: string): Promise<boolean> {
-		return this.noAuthRoutes.includes(path);
+		return secureConfig.noAuthRoutes.includes(path);
 	}
 
 	private async handleAuth(token: string, req: Request, next: NextFunction): Promise<void> {
-		verify(token.split(' ')[1], this.secret, async (error, payload) => {
+		verify(token.split(' ')[1], this.configService.get('SECRET'), async (error, payload) => {
 			if (error) {
 				return next(await this.getUnauthError());
 			} else if (payload && typeof payload !== 'string') {
@@ -55,10 +59,6 @@ export class AuthMiddleware implements IMiddleware {
 	 * Получает пользователя по email и роли.
 	 */
 	private async findAuthUser(email: string): Promise<UserModel | null> {
-		return this.prismaService.client.userModel.findFirst({
-			where: {
-				email,
-			},
-		});
+		return this.userRepo.find(email);
 	}
 }

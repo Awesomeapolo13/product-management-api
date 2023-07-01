@@ -10,7 +10,6 @@ import { HealthCheckController } from './health.check/health.check.controller';
 import { PrismaService } from './common/database/prisma.service';
 import { UserController } from './user/user.controller';
 import { AuthMiddleware } from './common/middleware/auth/auth.middleware';
-import { secureConfig } from './common/middleware/auth/secure.config';
 
 @injectable()
 export class App {
@@ -22,6 +21,7 @@ export class App {
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.ILogger) private logger: ILogger,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
+		@inject(TYPES.AuthMiddleware) private authMiddleware: AuthMiddleware,
 		@inject(TYPES.PrismaService) private readonly prismaService: PrismaService,
 		@inject(TYPES.HealthCheckController) private healthCheckController: HealthCheckController,
 		@inject(TYPES.UserController) private readonly userController: UserController,
@@ -49,15 +49,9 @@ export class App {
 	}
 
 	private useMiddleware(): void {
-		const authMiddleware = new AuthMiddleware(
-			this.configService.get('SECRET'),
-			secureConfig.noAuthRoutes,
-			this.prismaService,
-		);
-
 		this.app.use(express.json());
 		this.app.use(express.urlencoded());
-		this.app.use(authMiddleware.execute.bind(authMiddleware));
+		this.app.use(this.authMiddleware.execute.bind(this.authMiddleware));
 	}
 
 	private useExceptionFilters(): void {

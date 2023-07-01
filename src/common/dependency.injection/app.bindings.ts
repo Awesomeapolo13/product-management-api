@@ -11,12 +11,13 @@ import { ExceptionFilter } from '../error/exception.filter';
 import { IHealthCheckController } from '../../health.check/health.check.controller.interface';
 import { HealthCheckController } from '../../health.check/health.check.controller';
 import { PrismaService } from '../database/prisma.service';
-import { IUserRepository } from '../../user/user.repository.interface';
+import { IUserRepository } from '../../user/interface/user.repository.interface';
 import { UserRepository } from '../../user/user.repository';
 import { UserService } from '../../user/user.service';
 import { UserController } from '../../user/user.controller';
 import { IUserController } from '../../user/interface/user.controller.interface';
 import { IUserService } from '../../user/interface/user.service.interface';
+import { AuthMiddleware } from '../middleware/auth/auth.middleware';
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	// #region Common
@@ -27,6 +28,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 	bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();
 	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
+	bind<AuthMiddleware>(TYPES.AuthMiddleware).to(AuthMiddleware);
 	// #region Controllers
 	bind<IHealthCheckController>(TYPES.HealthCheckController).to(HealthCheckController);
 	// #region User services

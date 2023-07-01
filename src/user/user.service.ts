@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { v4 as uuidv4 } from 'uuid';
 import { TYPES } from '../common/dependency.injection/types';
 import { IConfigService } from '../common/config/config.service.interface';
-import { IUserRepository } from './user.repository.interface';
+import { IUserRepository } from './interface/user.repository.interface';
 import { User } from './user.entity';
 import { Role, UserModel } from '@prisma/client';
 import { sign } from 'jsonwebtoken';
