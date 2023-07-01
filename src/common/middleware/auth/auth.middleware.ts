@@ -5,6 +5,8 @@ import { UserModel } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { HttpError } from '../../error/http.error';
 import { HttpStatusCodeEnum } from '../../http/http.status.code.enum';
+import { AuthMsgEnum } from './auth.msg.enum';
+import { ExceptionContextEnum } from '../../error/exception.context.enum';
 
 export class AuthMiddleware implements IMiddleware {
 	constructor(
@@ -13,36 +15,40 @@ export class AuthMiddleware implements IMiddleware {
 		private readonly prismaService: PrismaService,
 	) {}
 	public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
-		if (this.noAuthRoutes.includes(req.path)) {
+		if (await this.isUnauthRoute(req.path)) {
 			next();
 		} else if (req.headers.authorization) {
-			verify(req.headers.authorization.split(' ')[1], this.secret, async (error, payload) => {
-				if (error) {
-					next(new HttpError(HttpStatusCodeEnum.UNAUTHORIZED_CODE, 'Вы не авторизованы.'));
-				} else if (
-					payload &&
-					typeof payload !== 'string' &&
-					!this.noAuthRoutes.includes(req.path)
-				) {
-					const authUser = await this.findAuthUser(payload.email);
-					if (authUser) {
-						next(
-							new HttpError(
-								HttpStatusCodeEnum.UNAUTHORIZED_CODE,
-								'Вы не авторизованы.',
-								'AUTHORIZATION',
-							),
-						);
-					}
-					req.user = authUser;
-					next();
-				}
-			});
+			await this.handleAuth(req.headers.authorization, req, next);
 		} else {
-			next(
-				new HttpError(HttpStatusCodeEnum.UNAUTHORIZED_CODE, 'Вы не авторизованы.', 'AUTHORIZATION'),
-			);
+			next(await this.getUnauthError());
 		}
+	}
+
+	private async isUnauthRoute(path: string): Promise<boolean> {
+		return this.noAuthRoutes.includes(path);
+	}
+
+	private async handleAuth(token: string, req: Request, next: NextFunction): Promise<void> {
+		verify(token.split(' ')[1], this.secret, async (error, payload) => {
+			if (error) {
+				return next(await this.getUnauthError());
+			} else if (payload && typeof payload !== 'string') {
+				const authUser = await this.findAuthUser(payload.email);
+				if (!authUser) {
+					return next(await this.getUnauthError());
+				}
+				req.user = authUser;
+				return next();
+			}
+		});
+	}
+
+	private async getUnauthError(): Promise<HttpError> {
+		return new HttpError(
+			HttpStatusCodeEnum.UNAUTHORIZED_CODE,
+			AuthMsgEnum.UNAUTH_MSG,
+			ExceptionContextEnum.AUTH_CONTEXT,
+		);
 	}
 
 	/**
