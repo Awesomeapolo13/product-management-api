@@ -1,17 +1,18 @@
 import { Router, NextFunction, Response } from 'express';
-import { LoggerInterface } from '../logger/logger.interface';
+import { ILogger } from '../logger/logger.interface';
 import { ExpressReturnType, RouteInterface } from './route.interface';
 import { injectable } from 'inversify';
 import { HttpError } from '../error/http.error';
 import { HttpStatusCodeEnum } from './http.status.code.enum';
+import { IHttpResp } from './http.resp.interface';
 
 @injectable()
 export abstract class BaseController {
 	private static readonly DEFAULT_HTTP_MSG = 'Something went wrong. Try to repeat later...';
 
-	private readonly _router: Router;
+	protected readonly _router: Router;
 
-	constructor(protected logger: LoggerInterface) {
+	constructor(protected logger: ILogger) {
 		this._router = Router();
 	}
 
@@ -36,7 +37,7 @@ export abstract class BaseController {
 		return res.status(code).json(responseBody);
 	}
 
-	public ok<T>(res: Response, responseBody: T): ExpressReturnType {
+	public ok<T extends IHttpResp>(res: Response, responseBody: T): ExpressReturnType {
 		return this.send<T>(res, HttpStatusCodeEnum.OK_CODE, responseBody);
 	}
 

@@ -1,14 +1,14 @@
-import { ConfigServiceInterface } from './config.service.interface';
+import { IConfigService } from './config.service.interface';
 import { inject, injectable } from 'inversify';
 import { config, DotenvConfigOutput, DotenvParseOutput } from 'dotenv';
 import { TYPES } from '../dependency.injection/types';
-import { LoggerInterface } from '../logger/logger.interface';
+import { ILogger } from '../logger/logger.interface';
 
 @injectable()
-export class ConfigService implements ConfigServiceInterface {
+export class ConfigService implements IConfigService {
 	private readonly config: DotenvParseOutput;
 
-	constructor(@inject(TYPES.LoggerInterface) private logger: LoggerInterface) {
+	constructor(@inject(TYPES.ILogger) private logger: ILogger) {
 		const result: DotenvConfigOutput = config();
 		if (result.error) {
 			this.logger.error('Could not read .env file.');
