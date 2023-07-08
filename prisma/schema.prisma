@@ -22,3 +22,15 @@ model UserModel {
 
   @@map("user")
 }
+
+model ProductModel {
+  id          Int      @id @unique @default(autoincrement())
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  quantity    Int      @default(0) @db.Integer
+  price       Decimal  @db.Decimal(10, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  @@map("product")
+}
