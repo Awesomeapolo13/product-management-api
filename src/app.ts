@@ -10,6 +10,7 @@ import { HealthCheckController } from './health.check/health.check.controller';
 import { PrismaService } from './common/database/prisma.service';
 import { UserController } from './user/user.controller';
 import { AuthMiddleware } from './common/middleware/auth/auth.middleware';
+import { ProductController } from './product/product.controller';
 
 @injectable()
 export class App {
@@ -25,6 +26,7 @@ export class App {
 		@inject(TYPES.PrismaService) private readonly prismaService: PrismaService,
 		@inject(TYPES.HealthCheckController) private healthCheckController: HealthCheckController,
 		@inject(TYPES.UserController) private readonly userController: UserController,
+		@inject(TYPES.ProductController) private readonly productController: ProductController,
 	) {
 		this.app = express();
 		this.port = Number(configService.get('SERVER_PORT'));
@@ -46,6 +48,7 @@ export class App {
 	private useRoutes(): void {
 		this.app.use('/health-check', this.healthCheckController.router);
 		this.app.use('/user', this.userController.router);
+		this.app.use('/product', this.productController.router);
 	}
 
 	private useMiddleware(): void {

@@ -4,12 +4,16 @@ import { UserModel } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/dependency.injection/types';
 import { PrismaService } from '../common/database/prisma.service';
+import { BaseRepository } from '../common/database/base.repository';
 
 @injectable()
-export class UserRepository implements IUserRepository {
-	constructor(@inject(TYPES.PrismaService) private readonly prismaService: PrismaService) {}
+export class UserRepository extends BaseRepository implements IUserRepository {
+	constructor(@inject(TYPES.PrismaService) protected readonly _prismaService: PrismaService) {
+		super(_prismaService);
+	}
+
 	public async create(user: User): Promise<UserModel> {
-		return this.prismaService.client.userModel.create({
+		return this._prismaService.client.userModel.create({
 			data: {
 				id: user.id,
 				name: user.name,
@@ -22,7 +26,7 @@ export class UserRepository implements IUserRepository {
 	}
 
 	public async find(email: string): Promise<UserModel | null> {
-		return this.prismaService.client.userModel.findFirst({
+		return this._prismaService.client.userModel.findFirst({
 			where: {
 				email,
 			},
