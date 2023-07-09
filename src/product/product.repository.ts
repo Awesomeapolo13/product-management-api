@@ -1,16 +1,23 @@
 import { IProductRepository } from './interface/product.repository.interface';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/dependency.injection/types';
 import { PrismaService } from '../common/database/prisma.service';
 import { BaseRepository } from '../common/database/base.repository';
+import { ProductModel } from '@prisma/client';
 
+@injectable()
 export class ProductRepository extends BaseRepository implements IProductRepository {
 	constructor(@inject(TYPES.PrismaService) protected readonly _prismaService: PrismaService) {
 		super(_prismaService);
 	}
 
-	public getList(): void {
-		// Todo: Реализовать получение списка продуктов.
+	public async getList(filters?: Record<string, any>): Promise<ProductModel[]> {
+		return this._prismaService.client.productModel.findMany({
+			where: filters,
+			orderBy: {
+				createdAt: 'desc',
+			},
+		});
 	}
 
 	public save(): void {
