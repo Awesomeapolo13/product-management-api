@@ -1,9 +1,9 @@
-export class ProductEntity {
+export class Product {
+	private _id: number;
 	private _updatedAt: Date;
 	private _description: string;
 
 	constructor(
-		private readonly _id: number,
 		private _name: string,
 		private _quantity: number,
 		private _price: number,

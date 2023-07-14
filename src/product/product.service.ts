@@ -3,6 +3,7 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../common/dependency.injection/types';
 import { IProductRepository } from './interface/product.repository.interface';
 import { ProductModel } from '@prisma/client';
+import { Product } from './product.entity';
 
 @injectable()
 export class ProductService implements IProductService {
@@ -28,8 +29,24 @@ export class ProductService implements IProductService {
 
 		return await this.productRepo.getList(criteria);
 	}
-	createProduct(): void {
-		// Todo: Реализовать сохранение продукта.
+	public async createProduct(prodData: {
+		name: string;
+		description?: string;
+		quantity: number;
+		price: number;
+	}): Promise<ProductModel> {
+		const product: Product = new Product(
+			prodData.name,
+			prodData.quantity,
+			prodData.price,
+			new Date(),
+		);
+
+		if (prodData.description) {
+			product.description = prodData.description;
+		}
+
+		return await this.productRepo.create(product);
 	}
 
 	editProduct(): void {

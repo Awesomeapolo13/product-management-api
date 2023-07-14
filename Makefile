@@ -2,7 +2,7 @@
 # Variables
 ##################
 
-DOCKER_COMPOSE = docker compose -f ./.deployment/docker/docker-compose.yml --env-file ./.deployment/docker/.env
+DOCKER_COMPOSE = docker-compose -f ./.deployment/docker/docker-compose.yml --env-file ./.deployment/docker/.env
 
 ##################
 # Docker compose
@@ -33,3 +33,13 @@ dc_down:
 
 dc_restart:
 	make dc_stop dc_start
+
+##################
+# Npm
+##################
+
+gen_types:
+	npm run prisma:generate
+
+migrate:
+	npm run prisma:migrate

@@ -1,18 +1,21 @@
 import { ProductModel } from '@prisma/client';
 
 export interface IProductService {
-	getProductsList: ({
-		name,
-		quantity,
-		price,
-		createdAt,
-	}: {
+	getProductsList: (filters?: {
 		name?: string;
 		quantity?: number;
 		price?: number;
 		createdAt?: string;
 	}) => Promise<ProductModel[]>;
-	createProduct: () => void;
+
+	createProduct: (prodData: {
+		name: string;
+		description?: string;
+		quantity: number;
+		price: number;
+	}) => Promise<ProductModel>;
+
 	editProduct: () => void;
+
 	deleteProduct: () => void;
 }
